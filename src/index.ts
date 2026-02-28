@@ -71,9 +71,9 @@ function buildMcpConfig(runner: "npx" | "bunx") {
           command: runner,
           args: commandArgs,
           env: {
-            OLLAMA_EMBED_MODEL: "nomic-embed-text",
-            OLLAMA_CHAT_MODEL: "gemma2:27b",
-            OLLAMA_API_KEY: "YOUR_OLLAMA_API_KEY",
+            OPENROUTER_EMBED_MODEL: "qwen/qwen3-embedding-8b",
+            OPENROUTER_CHAT_MODEL: "google/gemini-2.5-flash-lite-preview-09-2025",
+            OPENROUTER_API_KEY: "YOUR_OPENROUTER_API_KEY",
             CONTEXTPLUS_EMBED_BATCH_SIZE: "8",
             CONTEXTPLUS_EMBED_TRACKER: "true",
           },
@@ -173,7 +173,7 @@ server.tool(
 
 server.tool(
   "semantic_code_search",
-  "Search the codebase by MEANING, not just exact variable names. Uses Ollama embeddings over file headers and symbol names. " +
+  "Search the codebase by MEANING, not just exact variable names. Uses OpenRouter embeddings over file headers and symbol names. " +
   "Example: searching 'user authentication' finds files about login, sessions, JWT even if those exact words aren't used, with matched definition lines.",
   {
     query: z.string().describe("Natural language description of what you're looking for. Example: 'how are transactions signed'"),
@@ -307,9 +307,9 @@ server.tool(
 
 server.tool(
   "semantic_navigate",
-  "Browse the codebase by MEANING, not directory structure. Uses spectral clustering on Ollama embeddings to group " +
+  "Browse the codebase by MEANING, not directory structure. Uses spectral clustering on OpenRouter embeddings to group " +
   "semantically related files into labeled clusters. Inspired by Gabriella Gonzalez's semantic navigator. " +
-  "Requires Ollama running with an embedding model and a chat model for labeling.",
+  "Requires OpenRouter API key with an embedding model and a chat model for labeling.",
   {
     max_depth: z.number().optional().describe("Maximum nesting depth of clusters. Default: 3."),
     max_clusters: z.number().optional().describe("Maximum sub-clusters per level. Default: 20."),

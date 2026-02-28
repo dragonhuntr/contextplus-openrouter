@@ -17,7 +17,7 @@
     "@modelcontextprotocol/sdk": "^1.12.1",
     "ignore": "^7.0.4",
     "ml-matrix": "^6.12.1",
-    "ollama": "^0.6.3",
+    "@openrouter/sdk": "^0.9.11",
     "simple-git": "^3.27.0",
     "tree-sitter-wasms": "^0.1.13",
     "web-tree-sitter": "^0.20.8",

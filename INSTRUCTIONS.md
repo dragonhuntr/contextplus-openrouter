@@ -13,15 +13,15 @@ The MCP server is built with TypeScript and communicates over stdio using the Mo
 - `parser.ts` — Multi-language symbol extraction via tree-sitter AST with regex fallback. Supports 14+ languages.
 - `tree-sitter.ts` — WASM grammar loader for 43 file extensions using web-tree-sitter 0.20.8.
 - `walker.ts` — Gitignore-aware recursive directory traversal with depth and target path control.
-- `embeddings.ts` — Ollama vector embedding engine with disk cache, cosine similarity search, and API key support.
+- `embeddings.ts` — OpenRouter vector embedding engine with disk cache, cosine similarity search, and API key support.
 
 **Tools Layer** (`src/tools/`):
 
 - `context-tree.ts` — Token-aware structural tree with symbol line ranges and Level 0/1/2 pruning.
 - `file-skeleton.ts` — Function signatures with line ranges, without reading full bodies.
-- `semantic-search.ts` — Ollama-powered semantic file search with symbol definition lines and 60s cache TTL.
+- `semantic-search.ts` — OpenRouter-powered semantic file search with symbol definition lines and 60s cache TTL.
 - `semantic-identifiers.ts` — Identifier-level semantic search returning ranked definitions + call chains with line numbers.
-- `semantic-navigate.ts` — Browse-by-meaning navigator using spectral clustering and Ollama labeling.
+- `semantic-navigate.ts` — Browse-by-meaning navigator using spectral clustering and OpenRouter labeling.
 - `blast-radius.ts` — Symbol usage tracer across the entire codebase.
 - `static-analysis.ts` — Native linter runner (tsc, eslint, py_compile, cargo check, go vet).
 - `propose-commit.ts` — Code gatekeeper validating headers, FEATURE tag, no inline comments, nesting, file length.
@@ -41,9 +41,9 @@ The MCP server is built with TypeScript and communicates over stdio using the Mo
 
 | Variable                                | Default            | Description                                                   |
 | --------------------------------------- | ------------------ | ------------------------------------------------------------- |
-| `OLLAMA_EMBED_MODEL`                    | `nomic-embed-text` | Embedding model name                                          |
-| `OLLAMA_API_KEY`                        | (empty)            | Cloud auth (auto-detected by SDK)                             |
-| `OLLAMA_CHAT_MODEL`                     | `llama3.2`         | Chat model for cluster labeling                               |
+| `OPENROUTER_EMBED_MODEL`                | `qwen/qwen3-embedding-8b` | Embedding model name                                          |
+| `OPENROUTER_API_KEY`                    | (empty)                    | OpenRouter API key                                            |
+| `OPENROUTER_CHAT_MODEL`                | `google/gemini-2.5-flash-lite-preview-09-2025` | Chat model for cluster labeling                               |
 | `CONTEXTPLUS_EMBED_BATCH_SIZE`          | `8`                | Embedding batch per GPU call (hard-capped to 5-10)            |
 | `CONTEXTPLUS_EMBED_TRACKER`             | `true`             | Enable realtime embedding updates for changed files/functions |
 | `CONTEXTPLUS_EMBED_TRACKER_MAX_FILES`   | `8`                | Max changed files per tracker tick (hard-capped to 5-10)      |

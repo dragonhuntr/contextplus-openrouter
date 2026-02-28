@@ -1,7 +1,7 @@
-// Semantic project navigator using spectral clustering and Ollama labeling
+// Semantic project navigator using spectral clustering and OpenRouter labeling
 // Browse codebase by meaning: embeds files, clusters vectors, generates labels
 
-import { Ollama } from "ollama";
+import { OpenRouter } from "@openrouter/sdk";
 import { walkDirectory } from "../core/walker.js";
 import { analyzeFile, flattenSymbols, isSupportedFile } from "../core/parser.js";
 import { fetchEmbedding } from "../core/embeddings.js";
@@ -28,23 +28,30 @@ interface ClusterNode {
   children: ClusterNode[];
 }
 
-const EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL ?? "nomic-embed-text";
-const CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL ?? "llama3.2";
+const EMBED_MODEL = process.env.OPENROUTER_EMBED_MODEL ?? "qwen/qwen3-embedding-8b";
+const CHAT_MODEL = process.env.OPENROUTER_CHAT_MODEL ?? "google/gemini-2.5-flash-lite-preview-09-2025";
 const MAX_FILES_PER_LEAF = 20;
 
-const ollama = new Ollama();
+const openRouter = new OpenRouter({
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
 
 async function fetchEmbeddings(inputs: string[]): Promise<number[][]> {
   return fetchEmbedding(inputs);
 }
 
 async function chatCompletion(prompt: string): Promise<string> {
-  const response = await ollama.chat({
-    model: CHAT_MODEL,
-    messages: [{ role: "user", content: prompt }],
-    stream: false,
+  const response = await openRouter.chat.send({
+    chatGenerationParams: {
+      model: CHAT_MODEL,
+      messages: [{ role: "user" as const, content: prompt }],
+    },
   });
-  return response.message.content;
+  if ("choices" in response && Array.isArray(response.choices) && response.choices.length > 0) {
+    const content = response.choices[0].message?.content;
+    return typeof content === "string" ? content : "";
+  }
+  return "";
 }
 
 function extractHeader(content: string): string {
@@ -211,7 +218,7 @@ export async function semanticNavigate(options: SemanticNavigateOptions): Promis
   try {
     vectors = await fetchEmbeddings(embedTexts);
   } catch (err) {
-    return `Ollama not available for embeddings: ${err instanceof Error ? err.message : String(err)}\nMake sure Ollama is running or signed in (ollama signin) with model ${EMBED_MODEL}.`;
+    return `OpenRouter not available for embeddings: ${err instanceof Error ? err.message : String(err)}\nMake sure OPENROUTER_API_KEY is set with model ${EMBED_MODEL}.`;
   }
 
   if (files.length <= MAX_FILES_PER_LEAF) {
