@@ -1,7 +1,7 @@
-// Ollama-powered vector embedding engine with cosine similarity search
+// OpenRouter-powered vector embedding engine with cosine similarity search
 // Indexes file headers and symbols, caches embeddings to disk for speed
 
-import { Ollama } from "ollama";
+import { OpenRouter } from "@openrouter/sdk";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 
@@ -57,14 +57,16 @@ export interface EmbeddingCache {
   [path: string]: { hash: string; vector: number[] };
 }
 
-const EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL ?? "nomic-embed-text";
+export const EMBED_MODEL = process.env.OPENROUTER_EMBED_MODEL ?? "qwen/qwen3-embedding-8b";
 const CACHE_DIR = ".mcp_data";
 const CACHE_FILE = "embeddings-cache.json";
 const MIN_EMBED_BATCH_SIZE = 5;
 const MAX_EMBED_BATCH_SIZE = 10;
 const DEFAULT_EMBED_BATCH_SIZE = 8;
 
-const ollama = new Ollama();
+const openRouter = new OpenRouter({
+  apiKey: process.env["OPENROUTER_API_KEY"] ?? "",
+});
 
 function toIntegerOr(value: string | undefined, fallback: number): number {
   if (!value) return fallback;
@@ -86,8 +88,10 @@ export async function fetchEmbedding(input: string | string[]): Promise<number[]
 
   for (let i = 0; i < inputs.length; i += batchSize) {
     const batch = inputs.slice(i, i + batchSize);
-    const response = await ollama.embed({ model: EMBED_MODEL, input: batch });
-    embeddings.push(...response.embeddings);
+    const response = await openRouter.embeddings.generate({ requestBody: { model: EMBED_MODEL, input: batch } });
+    if (typeof response === "string") throw new Error(`Unexpected embedding response: ${response}`);
+    const sorted = response.data.slice().sort((a: { index?: number }, b: { index?: number }) => (a.index ?? 0) - (b.index ?? 0));
+    embeddings.push(...sorted.map((d: { embedding: number[] | string }) => d.embedding as number[]));
   }
 
   return embeddings;
@@ -236,7 +240,7 @@ export class SearchIndex {
     for (let i = 0; i < docs.length; i++) {
       const doc = docs[i];
       const text = `${doc.header} ${doc.symbols.join(" ")} ${doc.content}`;
-      const hash = hashContent(text);
+      const hash = hashContent(`${EMBED_MODEL}:${text}`);
 
       if (cache[doc.path]?.hash === hash) {
         this.vectors[i] = cache[doc.path].vector;

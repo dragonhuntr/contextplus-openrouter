@@ -1,4 +1,4 @@
-// Semantic navigate structural tests without Ollama dependency
+// Semantic navigate structural tests without OpenRouter dependency
 // Tests exports and function signatures of the navigate tool
 
 import { describe, it } from "node:test";

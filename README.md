@@ -54,9 +54,9 @@ For Claude Code, Cursor, and Windsurf, use `mcpServers`:
       "command": "bunx",
       "args": ["contextplus"],
       "env": {
-        "OLLAMA_EMBED_MODEL": "nomic-embed-text",
-        "OLLAMA_CHAT_MODEL": "gemma2:27b",
-        "OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY"
+        "OPENROUTER_EMBED_MODEL": "qwen/qwen3-embedding-8b",
+        "OPENROUTER_CHAT_MODEL": "google/gemini-2.5-flash-lite-preview-09-2025",
+        "OPENROUTER_API_KEY": "YOUR_OPENROUTER_API_KEY"
       }
     }
   }
@@ -73,9 +73,9 @@ For VS Code (`.vscode/mcp.json`), use `servers` and `inputs`:
       "command": "bunx",
       "args": ["contextplus"],
       "env": {
-        "OLLAMA_EMBED_MODEL": "nomic-embed-text",
-        "OLLAMA_CHAT_MODEL": "gemma2:27b",
-        "OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY"
+        "OPENROUTER_EMBED_MODEL": "qwen/qwen3-embedding-8b",
+        "OPENROUTER_CHAT_MODEL": "google/gemini-2.5-flash-lite-preview-09-2025",
+        "OPENROUTER_API_KEY": "YOUR_OPENROUTER_API_KEY"
       }
     }
   },
@@ -122,7 +122,7 @@ node build/index.js /path/to/my-project  # analyze a specific project
 
 Three layers built with TypeScript over stdio using the Model Context Protocol SDK:
 
-**Core** (`src/core/`) — Multi-language AST parsing (tree-sitter, 43 extensions), gitignore-aware traversal, Ollama vector embeddings with disk cache, wikilink hub graph.
+**Core** (`src/core/`) — Multi-language AST parsing (tree-sitter, 43 extensions), gitignore-aware traversal, OpenRouter vector embeddings with disk cache, wikilink hub graph.
 
 **Tools** (`src/tools/`) — 11 MCP tools exposing structural, semantic, and operational capabilities.
 
@@ -134,9 +134,9 @@ Three layers built with TypeScript over stdio using the Model Context Protocol S
 
 | Variable                                | Default            | Description                                                   |
 | --------------------------------------- | ------------------ | ------------------------------------------------------------- |
-| `OLLAMA_EMBED_MODEL`                    | `nomic-embed-text` | Embedding model                                               |
-| `OLLAMA_API_KEY`                        | —                  | Ollama Cloud API key                                          |
-| `OLLAMA_CHAT_MODEL`                     | `llama3.2`         | Chat model for cluster labeling                               |
+| `OPENROUTER_EMBED_MODEL`                | `qwen/qwen3-embedding-8b` | Embedding model                                               |
+| `OPENROUTER_API_KEY`                    | —                          | OpenRouter API key                                            |
+| `OPENROUTER_CHAT_MODEL`                | `google/gemini-2.5-flash-lite-preview-09-2025` | Chat model for cluster labeling                               |
 | `CONTEXTPLUS_EMBED_BATCH_SIZE`          | `8`                | Embedding batch size per GPU call, clamped to 5-10            |
 | `CONTEXTPLUS_EMBED_TRACKER`             | `true`             | Enable realtime embedding refresh on file changes             |
 | `CONTEXTPLUS_EMBED_TRACKER_MAX_FILES`   | `8`                | Max changed files processed per tracker tick, clamped to 5-10 |

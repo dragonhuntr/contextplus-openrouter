@@ -45,10 +45,10 @@ after(async () => {
   await rm(FIXTURE, { recursive: true, force: true });
 });
 
-describe("PROOF: Real Ollama Embeddings", () => {
-  it("fetchEmbedding returns actual vector from Ollama", async () => {
+describe("PROOF: Real OpenRouter Embeddings", () => {
+  it("fetchEmbedding returns actual vector from OpenRouter", async () => {
     console.log("\n=== EMBEDDING PROOF TEST ===");
-    console.log("Model:", process.env.OLLAMA_EMBED_MODEL || "nomic-embed-text");
+    console.log("Model:", process.env.OPENROUTER_EMBED_MODEL || "qwen/qwen3-embedding-8b");
     console.log("");
 
     try {
@@ -104,11 +104,11 @@ describe("PROOF: Real Ollama Embeddings", () => {
       console.log("  (Higher cosine = more semantically similar)");
       console.log("=== PROOF COMPLETE ===\n");
     } catch (err) {
-      console.log("\n  ⚠ Ollama not available — skipping live embedding test.");
+      console.log("\n  ⚠ OpenRouter not available — skipping live embedding test.");
       console.log(`  Error: ${err.message}`);
-      console.log("  Ensure Ollama is running: ollama serve");
+      console.log("  Ensure OPENROUTER_API_KEY is set.");
       console.log(
-        "  Or set OLLAMA_API_KEY for cloud: https://ollama.com/cloud\n",
+        "  Get your API key at: https://openrouter.ai/keys\n",
       );
     }
   });
@@ -166,9 +166,9 @@ describe("PROOF: Real Ollama Embeddings", () => {
 
       console.log("=== SEARCH PROOF COMPLETE ===\n");
     } catch (err) {
-      console.log("\n  ⚠ Ollama not available — skipping SearchIndex test.");
+      console.log("\n  ⚠ OpenRouter not available — skipping SearchIndex test.");
       console.log(`  Error: ${err.message}`);
-      console.log("  Ensure Ollama is running: ollama serve\n");
+      console.log("  Ensure OPENROUTER_API_KEY is set.\n");
     }
   });
 });
