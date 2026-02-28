@@ -40,3 +40,5 @@ Thumbs.db
 # Cache
 .eslintcache
 *.tsbuildinfo
+
+.mcp.json
