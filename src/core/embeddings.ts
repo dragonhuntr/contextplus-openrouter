@@ -57,7 +57,7 @@ export interface EmbeddingCache {
   [path: string]: { hash: string; vector: number[] };
 }
 
-const EMBED_MODEL = process.env.OPENROUTER_EMBED_MODEL ?? "qwen/qwen3-embedding-8b";
+export const EMBED_MODEL = process.env.OPENROUTER_EMBED_MODEL ?? "qwen/qwen3-embedding-8b";
 const CACHE_DIR = ".mcp_data";
 const CACHE_FILE = "embeddings-cache.json";
 const MIN_EMBED_BATCH_SIZE = 5;
@@ -240,7 +240,7 @@ export class SearchIndex {
     for (let i = 0; i < docs.length; i++) {
       const doc = docs[i];
       const text = `${doc.header} ${doc.symbols.join(" ")} ${doc.content}`;
-      const hash = hashContent(text);
+      const hash = hashContent(`${EMBED_MODEL}:${text}`);
 
       if (cache[doc.path]?.hash === hash) {
         this.vectors[i] = cache[doc.path].vector;

@@ -5,6 +5,7 @@ import { readFile } from "fs/promises";
 import { walkDirectory } from "../core/walker.js";
 import { analyzeFile, flattenSymbols, isSupportedFile } from "../core/parser.js";
 import {
+  EMBED_MODEL,
   fetchEmbedding,
   getEmbeddingBatchSize,
   loadEmbeddingCache,
@@ -225,7 +226,7 @@ async function buildIdentifierIndex(rootDir: string): Promise<IdentifierIndex> {
 
   for (let i = 0; i < docs.length; i++) {
     const text = docs[i].text;
-    const hash = hashContent(text);
+    const hash = hashContent(`${EMBED_MODEL}:${text}`);
     const key = `id:${docs[i].id}`;
     if (cache[key]?.hash === hash) {
       vectors[i] = cache[key].vector;
@@ -306,7 +307,7 @@ async function rankCallSites(
   for (const candidate of sampled) {
     const key = `${CALLSITE_CACHE_PREFIX}${candidate.file}:${candidate.line}`;
     const text = `${candidate.file} ${candidate.context}`;
-    const hash = hashContent(text);
+    const hash = hashContent(`${EMBED_MODEL}:${text}`);
     keyedCandidates.push({ candidate, key, hash });
     if (cache[key]?.hash !== hash) {
       uncached.push({ key, hash, text });
@@ -440,7 +441,7 @@ export async function refreshIdentifierEmbeddings(options: { rootDir: string; re
     const docs = await buildIdentifierDocsForFile(options.rootDir, relativePath);
     for (const doc of docs) {
       const key = `id:${doc.id}`;
-      const hash = hashContent(doc.text);
+      const hash = hashContent(`${EMBED_MODEL}:${doc.text}`);
       pending.push({ key, hash, text: doc.text });
     }
   }

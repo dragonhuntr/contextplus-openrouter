@@ -1,9 +1,10 @@
-// Ollama-powered semantic search over file headers and symbol names
+// OpenRouter-powered semantic search over file headers and symbol names
 // Uses vector embeddings with cosine similarity for concept matching
 
 import { walkDirectory } from "../core/walker.js";
 import { analyzeFile, flattenSymbols, isSupportedFile } from "../core/parser.js";
 import {
+  EMBED_MODEL,
   fetchEmbedding,
   getEmbeddingBatchSize,
   loadEmbeddingCache,
@@ -180,7 +181,7 @@ export async function refreshFileSearchEmbeddings(options: { rootDir: string; re
     }
 
     const text = `${doc.header} ${doc.symbols.join(" ")} ${doc.content}`;
-    const hash = hashContent(text);
+    const hash = hashContent(`${EMBED_MODEL}:${text}`);
     if (cache[relativePath]?.hash === hash) continue;
     pending.push({ path: relativePath, hash, text });
   }
